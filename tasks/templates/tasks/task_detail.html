@@ -1,0 +1,39 @@
+{% extends "tasks/base.html" %}
+{% block title %}{{ task.title }}{% endblock %}
+{% block content %}
+<a href="{% url 'task-list' %}" class="back-link">&larr; Back to tasks</a>
+<h1>{{ task.title }}</h1>
+<p class="badges">
+  <span class="badge status-{{ task.status }}">{{ task.get_status_display }}</span>
+  <span class="badge priority-{{ task.priority }}">{{ task.get_priority_display }} priority</span>
+  {% if task.due_date %}<span class="badge">Due {{ task.due_date }}</span>{% endif %}
+</p>
+
+<p><strong>Project:</strong> {{ task.project.name }}</p>
+<p><strong>Assignees:</strong>
+  {% for user in task.assignees.all %}{{ user.username }}{% if not forloop.last %}, {% endif %}{% empty %}Unassigned{% endfor %}
+</p>
+
+{% if task.description %}
+<h3>Description</h3>
+<p>{{ task.description|linebreaks }}</p>
+{% endif %}
+
+{% if task.meeting_notes %}
+<h3>Meeting Notes</h3>
+<p class="notes-box">{{ task.meeting_notes|linebreaks }}</p>
+{% endif %}
+
+{% if task.ai_summary %}
+<h3>✨ AI Summary</h3>
+<div class="ai-summary-box">{{ task.ai_summary|linebreaks }}</div>
+{% endif %}
+
+<div class="actions">
+  <a href="{% url 'task-edit' task.pk %}" class="btn-primary-sm">Edit</a>
+  <form method="post" action="{% url 'task-delete' task.pk %}" onsubmit="return confirm('Delete this task?');" style="display:inline">
+    {% csrf_token %}
+    <button type="submit" class="btn-danger-sm">Delete</button>
+  </form>
+</div>
+{% endblock %}

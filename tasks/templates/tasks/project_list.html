@@ -1,0 +1,19 @@
+{% extends "tasks/base.html" %}
+{% block title %}Projects{% endblock %}
+{% block content %}
+<h1>Projects</h1>
+<a href="{% url 'project-create' %}" class="btn-primary-sm">+ New Project</a>
+<ul class="project-list">
+  {% for project in projects %}
+  <li>
+    <strong>{{ project.name }}</strong>
+    <p>{{ project.description }}</p>
+    <div class="card-assignees">
+      {% for member in project.members.all %}<span class="chip">{{ member.username }}</span>{% endfor %}
+    </div>
+  </li>
+  {% empty %}
+  <p>No projects yet.</p>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "tasks/base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+<h1>Tasks</h1>
+
+<form class="filters" method="get">
+  <select name="status" onchange="this.form.submit()">
+    <option value="">All statuses</option>
+    {% for value, label in status_choices %}
+      <option value="{{ value }}" {% if active_status == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <select name="project" onchange="this.form.submit()">
+    <option value="">All projects</option>
+    {% for p in projects %}
+      <option value="{{ p.id }}" {% if active_project == p.id %}selected{% endif %}>{{ p.name }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div class="board" id="board">
+  {% for status_value, status_label in status_choices %}
+  <div class="column" data-status="{{ status_value }}">
+    <h3>{{ status_label }}</h3>
+    <div class="column-body" data-status="{{ status_value }}">
+      {% for task in tasks %}
+        {% if task.status == status_value %}
+        <a href="{% url 'task-detail' task.pk %}" class="card priority-{{ task.priority }}" draggable="true" data-task-id="{{ task.id }}">
+          <div class="card-title">{{ task.title }}</div>
+          <div class="card-meta">
+            {{ task.project.name }}
+            {% if task.due_date %} • Due {{ task.due_date }}{% endif %}
+          </div>
+          <div class="card-assignees">
+            {% for user in task.assignees.all %}<span class="chip">{{ user.username }}</span>{% endfor %}
+          </div>
+        </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

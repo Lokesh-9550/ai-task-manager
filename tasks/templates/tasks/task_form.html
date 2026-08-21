@@ -1,0 +1,20 @@
+{% extends "tasks/base.html" %}
+{% block title %}{{ mode }} Task{% endblock %}
+{% block content %}
+<h1>{{ mode }} Task</h1>
+<form method="post" class="task-form">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="form-row">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.name == "meeting_notes" %}
+        <button type="button" id="summarize-btn" class="btn-secondary-sm">✨ Preview AI Summary</button>
+        <div id="summary-preview" class="ai-summary-box" style="display:none;"></div>
+      {% endif %}
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn-primary-sm">Save Task</button>
+</form>
+{% endblock %}

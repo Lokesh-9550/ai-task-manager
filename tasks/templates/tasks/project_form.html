@@ -1,0 +1,16 @@
+{% extends "tasks/base.html" %}
+{% block title %}New Project{% endblock %}
+{% block content %}
+<h1>New Project</h1>
+<form method="post" class="task-form">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="form-row">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn-primary-sm">Save Project</button>
+</form>
+{% endblock %}
